@@ -2,3 +2,6 @@
 /release
 /.ipynb_checkpoints
 /*.7z
+/pkl
+*.lnk
+"run anaconda.lnk"
