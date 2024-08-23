@@ -1,14 +1,22 @@
 # Setup:
+![image](https://github.com/user-attachments/assets/b1286b27-0cd0-49ab-b9f7-f5f51e36b5ab)
+
 ## archive/
 - contains extracted csvs from: https://www.kaggle.com/datasets/fivethirtyeight/uber-pickups-in-new-york-city
+
+looks like:
+
+![image](https://github.com/user-attachments/assets/f7690b2d-acbd-4b10-9f1c-18ce7b1ffc7b)
 
 ## release/
 - contains extracted data from: https://www.microsoft.com/en-us/research/publication/t-drive-trajectory-data-sample/
 
+looks like (the 10,357 files should be all txts numbered):
+
+![image](https://github.com/user-attachments/assets/d2c2db35-6b3d-47ec-b090-7ae4a6ef954e)
+
 ## pkl/
 - empty folder
-
-
 
 
 
