@@ -1,3 +1,18 @@
+# Setup:
+## archive/
+- contains extracted csvs from: https://www.kaggle.com/datasets/fivethirtyeight/uber-pickups-in-new-york-city
+
+## release/
+- contains extracted data from: https://www.microsoft.com/en-us/research/publication/t-drive-trajectory-data-sample/
+
+## pkl/
+- empty folder
+
+
+
+
+
+# Empty txts here
 ```
 Error reading release/taxi_log_2008_by_id\10115.txt: No columns to parse from file
 Error reading release/taxi_log_2008_by_id\10352.txt: No columns to parse from file
