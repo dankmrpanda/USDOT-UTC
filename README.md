@@ -18,7 +18,9 @@ looks like (the 10,357 files should be all txts numbered):
 ## pkl/
 - empty folder
 
-
+```
+%windir%\System32\cmd.exe "/K" C:\ProgramData\anaconda3\Scripts\activate.bat C:\ProgramData\anaconda3  && conda activate tf && cd C:\Users\raymo\Desktop\ucr\USDOT UTC && jupyter lab
+```
 
 # Empty txts here
 ```
