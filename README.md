@@ -18,6 +18,14 @@ looks like (the 10,357 files should be all txts numbered):
 ## pkl/
 - empty folder
 
+# File Directory
+converter.py: run AFTER setup is done, creates all PKL files
+
+matrix.py: preprocesses data into a torch tensor
+
+gan.py: run AFTER converter.py, runs the gan model (calls matrix.py)
+
+jupyter files/: not maintained
 ```
 %windir%\System32\cmd.exe "/K" C:\ProgramData\anaconda3\Scripts\activate.bat C:\ProgramData\anaconda3  && conda activate tf && cd C:\Users\raymo\Desktop\ucr\USDOT UTC && jupyter lab
 ```
