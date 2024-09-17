@@ -64,8 +64,8 @@ def uber_combine():
                 chunk.to_csv(output, index=False, mode="a", header=False)
     print("CSV files have been combined")
     
-print("Converting T-drive dataset: txt -> csv -> pkl")
-tdrive_conv()
+# print("Converting T-drive dataset: txt -> csv -> pkl")
+# tdrive_conv()
 
 print("Combining all uber-raw-data csvs together")
 uber_combine()

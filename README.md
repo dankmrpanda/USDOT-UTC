@@ -1,6 +1,12 @@
 # Setup:
 ![image](https://github.com/user-attachments/assets/b1286b27-0cd0-49ab-b9f7-f5f51e36b5ab)
 
+## Preset Conda Environment
+1. download myenv.yml
+2. `conda create --name <myenv>`
+3. `conda activate myenv`
+4. `conda env update -f myenv.yml --prune`
+
 ## archive/
 - contains extracted csvs from: https://www.kaggle.com/datasets/fivethirtyeight/uber-pickups-in-new-york-city
 
@@ -26,11 +32,13 @@ matrix.py: preprocesses data into a torch tensor
 gan.py: run AFTER converter.py, runs the gan model (calls matrix.py)
 
 jupyter files/: not maintained
+
+
+# IGNORE
 ```
 %windir%\System32\cmd.exe "/K" C:\ProgramData\anaconda3\Scripts\activate.bat C:\ProgramData\anaconda3  && conda activate tf && cd C:\Users\raymo\Desktop\ucr\USDOT UTC && jupyter lab
 ```
-
-# Empty txts here
+Empty txts here
 ```
 Error reading release/taxi_log_2008_by_id\10115.txt: No columns to parse from file
 Error reading release/taxi_log_2008_by_id\10352.txt: No columns to parse from file
