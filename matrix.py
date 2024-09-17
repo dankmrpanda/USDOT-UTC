@@ -6,7 +6,7 @@ from datetime import timedelta
 
 file = "pkl/uber-raw-data-combined.csv.pkl" # read pkl file
 df = pd.read_pickle(file)
-main_matrix = 0
+main_matrix, ftensor
 
 if (df["Date/Time"].dtypes != np.datetime64):
     df["Date/Time"] = pd.to_datetime(df["Date/Time"]) # ensures all dates are in datetime format
@@ -58,7 +58,10 @@ def create_tensor():
         main_matrix = bucket(lat, lon, time, 0.1, 0.1, "min") # matrix is now bucketed, containing a count column
     preprocess(main_matrix) # creates matrix, with true = randomize
     matrix = pd.read_pickle("torch_process.pkl")
-    tensor = torch.tensor(matrix.values, dtype=torch.float32) # creates torch tensor from new matrix
-    return tensor
+    global ftensor
+    ftensor = torch.tensor(matrix.values, dtype=torch.float32) # creates torch tensor from new matrix
 
-create_tensor()
+def split(train, test, validation):
+    create_tensor()
+    train_x, test_x, validation_x = torch.utils.data.random_split(ftensor, [train, test, validation])
+    
