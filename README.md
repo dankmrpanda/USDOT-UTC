@@ -7,6 +7,10 @@
 3. `conda activate myenv`
 4. `conda env update -f myenv.yml --prune`
 
+## Export Conda Environment
+1. `conda activate myenv`
+2. `conda env export > myenv.yml`
+
 ## archive/
 - contains extracted csvs from: https://www.kaggle.com/datasets/fivethirtyeight/uber-pickups-in-new-york-city
 
