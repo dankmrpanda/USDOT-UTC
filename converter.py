@@ -38,8 +38,9 @@ from tqdm import tqdm
 # Authenticate using the Kaggle API
 api = KaggleApi()
 api.authenticate()
-dataset_url = "mukaffimoin/potato-diseases-datasets"
-path = "./kaggle test"
+dataset_url = "fivethirtyeight/uber-pickups-in-new-york-city"
+path = "./archive"
+os.makedirs(path)
 
 try:
     print("Please wait, this will take a while depending on dataset size")
@@ -48,10 +49,11 @@ try:
 except Exception as e:
     print(f'An error occurred: {e}')
 
+
 import csv
 import glob
 import pandas as pd
-
+'''
 def tdrive_conv():
     directory = "release/taxi_log_2008_by_id"
     column_names = ["taxi id", "date time", "longitude", "latitude"]
@@ -73,9 +75,11 @@ def tdrive_conv():
         df.to_pickle("release/" + pkl_file)
     else:
         print("release/taxi_log_2008_by_id.pkl exists")
+'''
 
 def uber_conv():
     directory = "archive"
+    os.makedirs("./pkl")
     for filename in os.listdir(directory):
         f = os.path.join(directory, filename)
         if os.path.isfile(f) and filename.endswith(".csv") and not os.path.isfile(f"pkl/{filename}.pkl"):
@@ -120,5 +124,19 @@ def uber_combine():
 print("Combining all uber-raw-data csvs together")
 uber_combine()
 
-print("Converting Uber dataset: csv -> pkl")
+delete = input("Delete unused datasets? (yes or no)")
+if delete.lower() == "yes":
+    folder_path = "archive/"
+    keep_file = "uber-raw-data-combined.csv"
+
+    try:
+        files = glob.glob(os.path.join(folder_path, '*'))
+        for file in files:
+            if os.path.basename(file) != keep_file:
+                os.remove(file)
+        print("Files deleted, except for:", keep_file)
+    except Exception as e:
+        print(f"Error deleting files: {e}")
+
+print("Converting Uber dataset(s): csv -> pkl")
 uber_conv()
