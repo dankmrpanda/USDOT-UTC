@@ -1,5 +1,4 @@
-# Setup:
-![image](https://github.com/user-attachments/assets/b1286b27-0cd0-49ab-b9f7-f5f51e36b5ab)
+# Setup
 
 ## Preset Conda Environment
 1. download myenv.yml
@@ -11,6 +10,19 @@
 1. `conda activate myenv`
 2. `conda env export > myenv.yml`
 
+## Run converter.py
+
+# File Directory
+converter.py: run first, do not need to do setup
+
+matrix.py: preprocesses data into a torch tensor
+
+gan.py: run AFTER converter.py, runs the gan model (calls matrix.py)
+
+jupyter files/: not maintained
+
+# File Structure
+![image](https://github.com/user-attachments/assets/b1286b27-0cd0-49ab-b9f7-f5f51e36b5ab)
 ## archive/
 - contains extracted csvs from: https://www.kaggle.com/datasets/fivethirtyeight/uber-pickups-in-new-york-city
 
@@ -27,15 +39,6 @@ looks like (the 10,357 files should be all txts numbered):
 
 ## pkl/
 - empty folder
-
-# File Directory
-converter.py: run AFTER setup is done, creates all PKL files
-
-matrix.py: preprocesses data into a torch tensor
-
-gan.py: run AFTER converter.py, runs the gan model (calls matrix.py)
-
-jupyter files/: not maintained
 
 
 # IGNORE
