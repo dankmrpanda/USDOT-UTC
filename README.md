@@ -1,4 +1,7 @@
 # Setup
+1. Load the preset conda environment (check below on instructions)
+2. `git clone https://github.com/dankmrpanda/USDOT-UTC.git`
+3. run converter.py in VSC, make sure to select your interpreter as the preset conda environment
 
 ## Preset Conda Environment
 1. download myenv.yml
@@ -9,8 +12,6 @@
 ## Export Conda Environment
 1. `conda activate myenv`
 2. `conda env export > myenv.yml`
-
-## Run converter.py
 
 # File Directory
 converter.py: run first, do not need to do setup
