@@ -1,12 +1,12 @@
 import pandas as pd
 import numpy as np
 import torch
-import random
 from datetime import timedelta
+from torch.utils.data import TensorDataset
 
 file = "pkl/uber-raw-data-combined.csv.pkl" # read pkl file
 df = pd.read_pickle(file)
-main_matrix, ftensor
+main_matrix, ftensor = None, None
 
 if (df["Date/Time"].dtypes != np.datetime64):
     df["Date/Time"] = pd.to_datetime(df["Date/Time"]) # ensures all dates are in datetime format
@@ -53,15 +53,32 @@ def preprocess(matrix):
     matrix.to_pickle("torch_process.pkl")
     
 def create_tensor():
-    if main_matrix == 0: # creates the full matrix once, to allow loops on function
-        global main_matrix
+    global main_matrix
+    if main_matrix == None: # creates the full matrix once, to allow loops on function
         main_matrix = bucket(lat, lon, time, 0.1, 0.1, "min") # matrix is now bucketed, containing a count column
     preprocess(main_matrix) # creates matrix, with true = randomize
     matrix = pd.read_pickle("torch_process.pkl")
     global ftensor
-    ftensor = torch.tensor(matrix.values, dtype=torch.float32) # creates torch tensor from new matrix
+    ftensor = TensorDataset(torch.tensor(matrix.values, dtype=torch.float32)) # creates torch tensor from new matrix
+    
+# get stack data from a subset
+def get_subset_tensor(subset):
+    return torch.stack([data[0] for data in subset])
 
 def split(train, test, validation):
+    if (train + test + validation != 1):
+        print("Make sure percents add up to 100")
+        return
     create_tensor()
     train_x, test_x, validation_x = torch.utils.data.random_split(ftensor, [train, test, validation])
-    
+
+    # torch tensor -> tensor for logging
+    train_tensor = get_subset_tensor(train_x)
+    test_tensor = get_subset_tensor(test_x)
+    validation_tensor = get_subset_tensor(validation_x)
+
+    # log tensors in console
+    print("Training Tensor:\n", train_tensor, train_tensor.shape)
+    print("Testing Tensor:\n", test_tensor, test_tensor.shape)
+    print("Validation Tensor:\n", validation_tensor, validation_tensor.shape)
+split(.8, .1, .1)

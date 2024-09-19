@@ -1,11 +1,12 @@
 # FOLLOWING IS REQUIRED TO USE KAGGLE API
 import os
-kaggle_dir = os.path.join(os.path.expanduser('~'), '.kaggle')
-kaggle_json_path = os.path.join(kaggle_dir, 'kaggle.json')
+import sys
+kaggle_dir = os.path.join(os.path.expanduser("~"), ".kaggle")
+kaggle_json_path = os.path.join(kaggle_dir, "kaggle.json")
 
 if not os.path.exists(kaggle_dir): #checks if .kaggle folder exists
     os.makedirs(kaggle_dir)
-kaggle_json_path = os.path.join(kaggle_dir, 'kaggle.json')
+kaggle_json_path = os.path.join(kaggle_dir, "kaggle.json")
 if not os.path.exists(kaggle_json_path):
     while True:
     # Get user input for Kaggle username and API key
@@ -22,7 +23,7 @@ if not os.path.exists(kaggle_json_path):
         else: break
 
     # Create the kaggle.json file based on given username and API key
-    with open(kaggle_json_path, 'w') as f:
+    with open(kaggle_json_path, "w") as f:
         f.write(f'{{"username":"{kaggle_username}","key":"{kaggle_key}"}}')
     f.close()
         
@@ -40,7 +41,8 @@ api = KaggleApi()
 api.authenticate()
 dataset_url = "fivethirtyeight/uber-pickups-in-new-york-city"
 path = "./archive"
-os.makedirs(path)
+if not os.path.exists(path): #checks if .kaggle folder exists
+    os.makedirs(path)
 
 try:
     print("Please wait, this will take a while depending on dataset size")
@@ -48,6 +50,8 @@ try:
     print(f'Dataset downloaded to: {os.path.abspath(path)}')
 except Exception as e:
     print(f'An error occurred: {e}')
+    print("Quitting Program")
+    sys.exit()
 
 
 import csv
@@ -92,6 +96,8 @@ def uber_conv():
                 # print(df)
             except Exception as e:
                 print(f"Error reading {f}: {e}")
+                print("Quitting Program")
+                sys.exit()
         else:
             print(f"{f} exists")
 
@@ -130,13 +136,15 @@ if delete.lower() == "yes":
     keep_file = "uber-raw-data-combined.csv"
 
     try:
-        files = glob.glob(os.path.join(folder_path, '*'))
+        files = glob.glob(os.path.join(folder_path, "*"))
         for file in files:
             if os.path.basename(file) != keep_file:
                 os.remove(file)
         print("Files deleted, except for:", keep_file)
     except Exception as e:
         print(f"Error deleting files: {e}")
+        print("Quitting Program")
+        sys.exit()
 
 print("Converting Uber dataset(s): csv -> pkl")
 uber_conv()
