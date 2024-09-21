@@ -21,7 +21,8 @@ def bucket(lat, lon, time, lat_bucket_size, lon_bucket_size, time_bucket_period)
     df["lat_bucket"] = (lat // lat_bucket_size) * 10 * lat_bucket_size # buckets values specified
     df["lon_bucket"] = (lon // lon_bucket_size) * 10 * lon_bucket_size
     df["time_bucket"] = time.dt.to_period(time_bucket_period).dt.start_time
-    matrix = df.groupby([df["time_bucket"], df["lat_bucket"], df["lon_bucket"]]).size().reset_index(name="count") #used to get the count
+    # matrix = df.groupby([df["time_bucket"], df["lat_bucket"], df["lon_bucket"]]).size().reset_index(name="count") #used to get the count
+    matrix = df.groupby([df["time_bucket"], df["lat_bucket"], df["lon_bucket"]]).agg(lambda x: x).reset_index() # removed counter
 
     return matrix
 
