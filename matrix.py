@@ -18,13 +18,12 @@ time = df["Date/Time"]
 
 
 def bucket(lat, lon, time, lat_bucket_size, lon_bucket_size, time_bucket_period):
+    print("Bucketing values")
     df["lat_bucket"] = (lat // lat_bucket_size) * 10 * lat_bucket_size # buckets values specified
     df["lon_bucket"] = (lon // lon_bucket_size) * 10 * lon_bucket_size
     df["time_bucket"] = time.dt.to_period(time_bucket_period).dt.start_time
     # matrix = df.groupby([df["time_bucket"], df["lat_bucket"], df["lon_bucket"]]).size().reset_index(name="count") #used to get the count
-    matrix = df.groupby([df["time_bucket"], df["lat_bucket"], df["lon_bucket"]]).agg(lambda x: x).reset_index() # removed counter
-
-    return matrix
+    return df[["lat_bucket", "lon_bucket", "time_bucket"]].copy()
 
 def preprocess(matrix):
     '''
@@ -37,7 +36,7 @@ def preprocess(matrix):
                                                                                         .total_seconds())))
         matrix = df[(df["Date/Time"] >= range1) & (df["Date/Time"] <= range2)] # filters dataset to only have between range1 and range2 values
     '''
-    
+    print("Matrix breakdown")
     # break down matrix into time sections
     matrix["year"] = matrix["time_bucket"].dt.year
     matrix["month"] = matrix["time_bucket"].dt.month
@@ -54,6 +53,7 @@ def preprocess(matrix):
     matrix.to_pickle("torch_process.pkl")
     
 def create_tensor():
+    print("make tensor")
     global main_matrix
     if main_matrix == None: # creates the full matrix once, to allow loops on function
         main_matrix = bucket(lat, lon, time, 0.1, 0.1, "min") # matrix is now bucketed, containing a count column
@@ -70,9 +70,11 @@ def split(train, test, validation):
     if (train + test + validation != 1):
         print("Make sure percents add up to 100")
         return
+    print("Creating Tensor")
     create_tensor()
     train_x, test_x, validation_x = torch.utils.data.random_split(ftensor, [train, test, validation])
-
+    print("Split tensor done")
+    print("Subset to tensor")
     # torch tensor -> tensor for logging
     train_x = get_subset_tensor(train_x)
     test_x = get_subset_tensor(test_x)
@@ -83,3 +85,4 @@ def split(train, test, validation):
     print("Testing Tensor:\n", test_x, test_x.shape)
     print("Validation Tensor:\n", validation_x, validation_x.shape)
     return train_x, test_x, validation_x
+split(.8, .1, .1)
