@@ -73,12 +73,12 @@ def split(train, test, validation):
     train_x, test_x, validation_x = torch.utils.data.random_split(ftensor, [train, test, validation])
 
     # torch tensor -> tensor for logging
-    train_tensor = get_subset_tensor(train_x)
-    test_tensor = get_subset_tensor(test_x)
-    validation_tensor = get_subset_tensor(validation_x)
+    train_x = get_subset_tensor(train_x)
+    test_x = get_subset_tensor(test_x)
+    validation_x = get_subset_tensor(validation_x)
 
     # log tensors in console
-    print("Training Tensor:\n", train_tensor, train_tensor.shape)
-    print("Testing Tensor:\n", test_tensor, test_tensor.shape)
-    print("Validation Tensor:\n", validation_tensor, validation_tensor.shape)
-split(.8, .1, .1)
+    print("Training Tensor:\n", train_x, train_x.shape)
+    print("Testing Tensor:\n", test_x, test_x.shape)
+    print("Validation Tensor:\n", validation_x, validation_x.shape)
+    return train_x, test_x, validation_x

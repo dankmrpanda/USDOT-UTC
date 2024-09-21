@@ -51,10 +51,11 @@ class Discriminator(nn.Module):
 
 # Initialize models
 noise_dim = 100
-output_shape = (1, 28, 32, 1032103)  # Example shape: 1 channel, 64x64 spatial, 64 temporal
+output_shape = (1, 28, 32, 825683)  # Example shape: 1 channel, 64x64 spatial, 64 temporal
 generator = Generator(noise_dim=noise_dim, output_shape=output_shape)
 discriminator = Discriminator(input_shape=output_shape)
-tensor = matrix.create_tensor()
+batch_size = 32
+train_x, test_x, validation_x = matrix.split(.8, .1, .1)
 # Loss and optimizers
 criterion = nn.BCELoss()
 gen_optimizer = optim.Adam(generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
@@ -71,7 +72,7 @@ for epoch in range(epochs):
     disc_optimizer.zero_grad()
 
     # real_data = torch.randn(batch_size, *output_shape)  # Replace with actual data
-    real_data = tensor
+    real_data = train_x
     real_labels = torch.ones(batch_size, 1)
     fake_labels = torch.zeros(batch_size, 1)
 

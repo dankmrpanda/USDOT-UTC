@@ -6,3 +6,4 @@
 *.lnk
 *.pkl
 "run anaconda.lnk"
+__pycache__/
