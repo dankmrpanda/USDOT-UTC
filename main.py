@@ -66,16 +66,18 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Create training dataset
 print("Creating training dataset")
-train_data, test_data, validation_data, lat_dim, long_dim, time_steps = matrix.split(0.8, 0.1, 0.1)
+train_data, test_data, validation_data, lat_dim, lon_dim, time_steps = matrix.split(0.8, 0.1, 0.1)
 print("Training dataset created")
 
 # Convert to float32 and move to device
 spatiotemporal_data = train_data.float().to(device)
 
 # Ensure data has correct dimensions
-if spatiotemporal_data.dim() == 4:
-    spatiotemporal_data = spatiotemporal_data.unsqueeze(1)  # Add channel dimension if missing
-
+if spatiotemporal_data.dim() == 3:
+    spatiotemporal_data = spatiotemporal_data  # Shape: (batch_size, time_steps, 2)
+else:
+    raise ValueError(f"Unexpected spatiotemporal_data dimensions: {spatiotemporal_data.shape}")
+print(spatiotemporal_data)
 # Create Dataset and DataLoader
 print("Creating dataset")
 dataset = SpatiotemporalTensorDataset(spatiotemporal_data)
@@ -87,11 +89,11 @@ print("Dataloader created")
 
 # Initialize the GAN models
 print("Initializing GAN models")
-generator = Generator(input_dim, hidden_dim, time_steps, lat_dim, long_dim).to(device)
-discriminator = Discriminator(1, time_steps, lat_dim, long_dim, hidden_dim).to(device)
+generator = Generator(input_dim, hidden_dim, time_steps, lat_dim, lon_dim).to(device)
+discriminator = Discriminator(1, time_steps, lat_dim, lon_dim, hidden_dim).to(device)
 print("GAN models initialized")
 
 # Train the GAN
 print("Training GAN model")
-train_gan(train_loader, generator, discriminator, num_epochs, device, input_dim)
+train_gan(train_loader, generator, discriminator, num_epochs, device, input_dim, lat_dim, lon_dim)
 print("GAN model trained")

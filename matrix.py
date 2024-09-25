@@ -23,7 +23,7 @@
 #     print("Bucketing values")
 #     df["lat"] = (lat // lat_bucket_size).round() * lat_bucket_size # buckets values specified
 #     df["lon"] = (lon // lon_bucket_size).round() * lon_bucket_size
-#     df["time"] = time.dt.to_period(time_bucket_period).dt.start_time
+#     df["time"] = time.dt.to_period(time_bucket_period).dt.start_time # seconds
 #     df["time"] = (df["time"] - df["time"].min()).dt.total_seconds()
 #     # matrix = df.groupby([df["time_bucket"], df["lat_bucket"], df["lon_bucket"]]).size().reset_index(name="count") #used to get the count
 #     lat_min = df["lat"].min()  # Assuming latitude is in the first column
@@ -140,6 +140,7 @@
 import pandas as pd
 import numpy as np
 import torch
+from torch.nn.utils.rnn import pad_sequence
 
 file = "pkl/uber-raw-data-combined.csv.pkl"  # Read pkl file
 print(f"Reading {file}")
@@ -151,64 +152,43 @@ print(f"Shape: {df.shape}")
 
 def bucket(df, lat_bucket_size=0.1, lon_bucket_size=0.1, time_bucket_period="min"):
     print("Bucketing values")
-    df["lat"] = (df["Lat"] // lat_bucket_size).round() * lat_bucket_size
+    # Bucket latitude and longitude
+    df["lat"] = (df["Lat"] // lat_bucket_size).round() * lat_bucket_size # buckets values specified
     df["lon"] = (df["Lon"] // lon_bucket_size).round() * lon_bucket_size
+    print(df["lat"])
+    # Bucket time into periods and assign integer indices
     df["time"] = df["Date/Time"].dt.to_period(time_bucket_period).dt.start_time
-    df["time"] = (df["time"] - df["time"].min()).dt.total_seconds()
 
-    lat_min = df["lat"].min()
-    lat_max = df["lat"].max()
-    lon_min = df["lon"].min()
-    lon_max = df["lon"].max()
+    # Assign integer indices to unique time buckets
+    df['time_idx'], unique_times = pd.factorize(df['time'])
 
-    lat_dim = int(((lat_max - lat_min) / lat_bucket_size) + 1)
-    lon_dim = int(((lon_max - lon_min) / lon_bucket_size) + 1)
+    lat_dim = round(df["lat"].max() + 1, 1)
+    lon_dim = round(df["lon"].max() + 1, 1)
 
-    print(f"Latitude range: {lat_min} to {lat_max}, Dimension: {lat_dim}")
-    print(f"Longitude range: {lon_min} to {lon_max}, Dimension: {lon_dim}")
+    print(f"Latitude dimension: {lat_dim}")
+    print(f"Longitude dimension: {lon_dim}")
 
-    df["lat_idx"] = ((df["lat"] - lat_min) / lat_bucket_size).astype(int)
-    df["lon_idx"] = ((df["lon"] - lon_min) / lon_bucket_size).astype(int)
-
-    return df[["lat_idx", "lon_idx", "time"]].copy(), lat_dim, lon_dim
+    # Return the necessary columns and dimensions
+    return df[["lat", "lon", "time_idx"]].copy(), lat_dim, lon_dim, len(unique_times)
 
 def create_tensor():
     print("Making global tensor")
-    main_matrix, lat_dim, lon_dim = bucket(df)
-
-    # Calculate time steps
-    time_counts = main_matrix["time"].value_counts()
-    time_steps = int(time_counts.max())
-
-    # Get unique time values and sort them
-    unique_times = np.sort(main_matrix["time"].unique())
-
-    # Initialize a numpy array for the tensor
-    num_samples = len(unique_times)
-    tensor_input = np.zeros((num_samples, time_steps, 2), dtype=np.float32)
-
-    for idx, time_value in enumerate(unique_times):
-        group = main_matrix[main_matrix["time"] == time_value]
-        coords = group[["lat_idx", "lon_idx"]].to_numpy()
-
-        # Pad if necessary
-        group_size = coords.shape[0]
-        if group_size < time_steps:
-            padding = np.zeros((time_steps - group_size, 2), dtype=np.float32)
-            coords_padded = np.vstack((coords, padding))
-        else:
-            coords_padded = coords[:time_steps]
-
-        tensor_input[idx] = coords_padded
-
-    # Convert to torch tensor
-    ftensor = torch.from_numpy(tensor_input)  # Shape: (num_samples, time_steps, 2)
+    main_matrix, lat_dim, lon_dim, num_times = bucket(df)
+    print(main_matrix)
+    
+   
+   
+   
+   
+    ftensor = torch.from_numpy(tensor_input)
 
     print("Global tensor created")
-    return ftensor, lat_dim, lon_dim, time_steps
+    return ftensor, lat_dim, lon_dim, 
+
 
 def split(train_ratio, test_ratio, validation_ratio):
-    if not np.isclose(train_ratio + test_ratio + validation_ratio, 1.0):
+    total_ratio = train_ratio + test_ratio + validation_ratio
+    if not np.isclose(total_ratio, 1.0):
         raise ValueError("Train, test, and validation ratios must sum to 1.")
     print("Creating Tensor")
     ftensor, lat_dim, lon_dim, time_steps = create_tensor()

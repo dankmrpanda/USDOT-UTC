@@ -50,7 +50,7 @@ import torch
 import torch.optim as optim
 import torch.nn as nn
 
-def train_gan(train_loader, generator, discriminator, num_epochs, device, input_dim):
+def train_gan(train_loader, generator, discriminator, num_epochs, device, input_dim, lat_dim, lon_dim):
     criterion = nn.BCELoss()
     optimizer_G = optim.Adam(generator.parameters(), lr=0.0002, betas=(0.5, 0.999))
     optimizer_D = optim.Adam(discriminator.parameters(), lr=0.0002, betas=(0.5, 0.999))
@@ -60,17 +60,29 @@ def train_gan(train_loader, generator, discriminator, num_epochs, device, input_
 
     for epoch in range(num_epochs):
         for i, real_data in enumerate(train_loader):
-            real_data = real_data.to(device).float()
+            real_data = real_data.to(device).long()  # Convert to long for indexing
 
-            # Ensure data has correct dimensions
-            if real_data.dim() == 5:
-                pass  # Data already has correct shape
-            elif real_data.dim() == 4:
-                real_data = real_data.unsqueeze(1)  # Add channel dimension
-            else:
-                raise ValueError(f"Unexpected real_data dimensions: {real_data.shape}")
+            batch_size, time_steps, _ = real_data.shape
 
-            batch_size = real_data.size(0)
+            # Create an empty grid for real data
+            real_data_grid = torch.zeros(batch_size, 1, time_steps, lat_dim, lon_dim, device=device)
+
+            # Extract indices
+            lat_indices = real_data[:, :, 0]  # Shape: (batch_size, time_steps)
+            lon_indices = real_data[:, :, 1]  # Shape: (batch_size, time_steps)
+
+            # Clamp indices to valid range
+            lat_indices = torch.clamp(lat_indices, 0, lat_dim - 1)
+            lon_indices = torch.clamp(lon_indices, 0, lon_dim - 1)
+
+            # Prepare batch and time indices
+            batch_indices = torch.arange(batch_size, device=device).unsqueeze(1).expand(-1, time_steps)
+            time_indices = torch.arange(time_steps, device=device).unsqueeze(0).expand(batch_size, -1)
+
+            # Set the positions in the grid to 1
+            real_data_grid[batch_indices, 0, time_indices, lat_indices, lon_indices] = 1.0
+
+            real_data = real_data_grid.float()  # Now shape is [batch_size, 1, time_steps, lat_dim, lon_dim]
 
             # Train Discriminator
             optimizer_D.zero_grad()
