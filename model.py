@@ -30,8 +30,6 @@ class Generator(nn.Module):
 class Discriminator(nn.Module):
     def __init__(self, input_channels, lat_dim, long_dim, hidden_dim):
         super(Discriminator, self).__init__()
-        # self.lat_dim = lat_dim
-        # self.long_dim = long_dim
         self.conv_net = nn.Sequential(
             nn.Conv2d(input_channels, hidden_dim, kernel_size=(3, 3), padding=1),
             nn.LeakyReLU(0.2),

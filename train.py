@@ -13,7 +13,6 @@ def train_gan(train_loader, generator, discriminator, num_epochs, device, input_
     for epoch in range(num_epochs):
         for i, real_data in enumerate(train_loader):
             real_data = real_data.to(device) # Move real data to device
-
             # Train Discriminator
             optimizer_D.zero_grad() # Reset discriminator gradients
             
@@ -36,13 +35,13 @@ def train_gan(train_loader, generator, discriminator, num_epochs, device, input_
 
             # Train Generator
             optimizer_G.zero_grad()
-            fake_output = discriminator(fake_data.detach()) # Pass fake data through discriminator (detached)
-            # fake_output = discriminator(fake_data)
+            # fake_output = discriminator(fake_data.detach()) # Pass fake data through discriminator (detached)
+            fake_output = discriminator(fake_data)
             g_loss = criterion(fake_output, real_labels)
             g_loss.backward()
             optimizer_G.step()
             
         # progress
-        if i % 50 == 0:
-            print(f"Epoch [{epoch+1}/{num_epochs}], Batch [{i}/{len(train_loader)}], "
+        # if i % 50 == 0:
+        print(f"Epoch [{epoch+1}/{num_epochs}], Batch [{i}/{len(train_loader)}], "
                   f"Loss_D: {d_loss.item():.4f}, Loss_G: {g_loss.item():.4f}")
