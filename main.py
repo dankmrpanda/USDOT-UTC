@@ -9,8 +9,8 @@ import matrix
 input_dim = 100   # Dimension of noise vector
 hidden_dim = 256  # Hidden layer dimension
 
-lat_dim = 28      # Latitude dimension
-long_dim = 32     # Longitude dimension
+lat_dim = 25      # Latitude dimension
+long_dim = 28     # Longitude dimension
 num_samples = 208075 # Number of rows
 num_epochs = 100   # Number of training epochs
 batch_size = 128   # Batch size
@@ -20,6 +20,8 @@ batch_size = 128   # Batch size
 
 print("Creating training dataset")
 train, test, validation = matrix.split(.8, .1, .1)
+
+
 time_steps = matrix.time_steps  # Number of time steps
 print("Training dataset done")
 spatiotemporal_data = torch.tensor(train).clone().detach().requires_grad_(True)
@@ -28,7 +30,6 @@ spatiotemporal_data = spatiotemporal_data.double()
 # Create Dataset and DataLoader
 print("Creating dataset")
 dataset = SpatiotemporalTensorDataset(spatiotemporal_data)
-# dataset = TensorDataset(spatiotemporal_data)
 print("Creating dataset done")
 print("Creating dataloader")
 train_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)

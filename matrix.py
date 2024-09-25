@@ -26,6 +26,18 @@ def bucket(lat, lon, time, lat_bucket_size, lon_bucket_size, time_bucket_period)
     df["time"] = time.dt.to_period(time_bucket_period).dt.start_time
     df["time"] = (df["time"] - df["time"].min()).dt.total_seconds()
     # matrix = df.groupby([df["time_bucket"], df["lat_bucket"], df["lon_bucket"]]).size().reset_index(name="count") #used to get the count
+    lat_min = df["lat"].min()  # Assuming latitude is in the first column
+    lat_max = df["lat"].max()
+
+    long_min = df["lon"].min()  # Assuming longitude is in the second column
+    long_max = df["lon"].max()
+
+    print(f"Latitude range: {lat_min} to {lat_max}")
+    print(f"Longitude range: {long_min} to {long_max}")
+    lat_dim = int((lat_max - lat_min) / 0.1)  # Define your lat_resolution
+    long_dim = int((long_max - long_min) / 0.1)  # Define your long_resolution
+    print(lat_dim, long_dim)
+    
     
     return df[["lat", "lon", "time"]].copy()
 
@@ -85,7 +97,7 @@ def create_tensor():
     padded_matrix.to_pickle("torch_process.pkl")
     data_array = padded_matrix.to_numpy()
     print(data_array)
-
+    # --------------------------------------------
     batch_size = data_array.shape[0] // time_steps
     spatial_dim = 2  # lat and long
     channels = 1 
