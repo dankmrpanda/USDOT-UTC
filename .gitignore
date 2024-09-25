@@ -7,3 +7,4 @@
 *.pkl
 "run anaconda.lnk"
 __pycache__/
+testing gan.py
