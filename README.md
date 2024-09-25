@@ -1,3 +1,4 @@
+## Please use "model-modifications" branch for GAN model modifications
 # Setup
 1. Load the preset conda environment (check below on instructions)
 2. `git clone https://github.com/dankmrpanda/USDOT-UTC.git`
