@@ -41,36 +41,11 @@ def bucket(lat, lon, time, lat_bucket_size, lon_bucket_size, time_bucket_period)
     
     return df[["lat", "lon", "time"]].copy(), lat_dim, long_dim
 
-# def preprocess(matrix): discontinued, save for future use if needed
-#     '''
-#     if randomize: # creates a randomized time matrix window
-#         range1 = matrix["time_bucket"].max() + timedelta(seconds=random.randint(0, int((matrix["time_bucket"].min() # gets random datetime value in range of dataset
-#                                                                                         - matrix["time_bucket"].max())
-#                                                                                        .total_seconds())))
-#         range2  = matrix["time_bucket"].max() + timedelta(seconds=random.randint(0, int((range1 -  #gets random datetime value in range of range1 to max
-#                                                                                          matrix["time_bucket"].max())
-#                                                                                         .total_seconds())))
-#         matrix = df[(df["Date/Time"] >= range1) & (df["Date/Time"] <= range2)] # filters dataset to only have between range1 and range2 values
-#     '''
-#     print("Matrix column split")
-#     # break down matrix into time sections
-#     matrix["year"] = matrix["time_bucket"].dt.year
-#     matrix["month"] = matrix["time_bucket"].dt.month
-#     matrix["day"] = matrix["time_bucket"].dt.day
-    
-#     matrix["hour"] = matrix["time_bucket"].dt.hour
-#     matrix["minute"] = matrix["time_bucket"].dt.minute
-#     matrix["second"] = matrix["time_bucket"].dt.second
 
-#     matrix["total_seconds"] = matrix["hour"] * 3600 + matrix["minute"] * 60 + matrix["second"] #converts hour, min, sec all into seconds
-#     matrix = matrix.drop(columns=["time_bucket", "hour", "minute", "second"])
-
-#     print(matrix)
-#     matrix.to_pickle("torch_process.pkl")
 
 def create_tensor():
     print("Making global tensor")
-    main_matrix, lat_dim, long_dim = bucket(lat, lon, time, 0.1, 0.1, "min") # matrix is now bucketed, containing a count column
+    main_matrix, lat_dim, long_dim = bucket(lat, lon, time, 0.5, 0.5, "5T") # matrix is now bucketed, containing a count column
     # print(main_matrix)
     
     # --------------method padding------------------
@@ -171,7 +146,32 @@ def split(train, test, validation):
 
 #     # Return the necessary columns and dimensions
 #     return df[["lat", "lon", "time_idx"]].copy(), lat_dim, lon_dim, len(unique_times)
+# def preprocess(matrix): discontinued, save for future use if needed
+#     '''
+#     if randomize: # creates a randomized time matrix window
+#         range1 = matrix["time_bucket"].max() + timedelta(seconds=random.randint(0, int((matrix["time_bucket"].min() # gets random datetime value in range of dataset
+#                                                                                         - matrix["time_bucket"].max())
+#                                                                                        .total_seconds())))
+#         range2  = matrix["time_bucket"].max() + timedelta(seconds=random.randint(0, int((range1 -  #gets random datetime value in range of range1 to max
+#                                                                                          matrix["time_bucket"].max())
+#                                                                                         .total_seconds())))
+#         matrix = df[(df["Date/Time"] >= range1) & (df["Date/Time"] <= range2)] # filters dataset to only have between range1 and range2 values
+#     '''
+#     print("Matrix column split")
+#     # break down matrix into time sections
+#     matrix["year"] = matrix["time_bucket"].dt.year
+#     matrix["month"] = matrix["time_bucket"].dt.month
+#     matrix["day"] = matrix["time_bucket"].dt.day
+    
+#     matrix["hour"] = matrix["time_bucket"].dt.hour
+#     matrix["minute"] = matrix["time_bucket"].dt.minute
+#     matrix["second"] = matrix["time_bucket"].dt.second
 
+#     matrix["total_seconds"] = matrix["hour"] * 3600 + matrix["minute"] * 60 + matrix["second"] #converts hour, min, sec all into seconds
+#     matrix = matrix.drop(columns=["time_bucket", "hour", "minute", "second"])
+
+#     print(matrix)
+#     matrix.to_pickle("torch_process.pkl")
 # def create_tensor():
 #     print("Making global tensor")
 #     main_matrix, lat_dim, lon_dim, num_times = bucket(df)
