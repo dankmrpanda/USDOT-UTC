@@ -17,16 +17,19 @@ class Generator(nn.Module):
         )
 
         self.lat_long_mlp = nn.Sequential(
-            nn.Linear(hidden_dim, time_steps * lat_dim * lon_dim),
-            # nn.Tanh()  # Assuming values between -1 and 1
+            # nn.Linear(time_steps * lat_dim * lon_dim, lat_dim*lon_dim),
+            nn.Linear(60625, 625),
+            nn.Linear(625, 256),
+            nn.Linear(256, 32),
             nn.ReLU(),
-            nn.Linear(hidden_dim, lat_dim * lon_dim)
+            # nn.Linear(hidden_dim, lat_dim * lon_dim)
         )
 
     def forward(self, z):
         latent = self.main_mlp(z)
-        # lat_long_factors = self.lat_long_mlp(latent)
-        lat_long_factors = lat_long_factors.view(-1, 1, self.time_steps, self.lat_dim, self.lon_dim)
+        print(latent)
+        lat_long_factors = self.lat_long_mlp(latent)
+        # lat_long_factors = lat_long_factors.view(-1, 1, self.time_steps, self.lat_dim, self.lon_dim)
         return lat_long_factors
 
 
