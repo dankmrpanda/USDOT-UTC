@@ -34,8 +34,8 @@ def bucket(lat, lon, time, lat_bucket_size, lon_bucket_size, time_bucket_period)
 
     print(f"Latitude range: {lat_min} to {lat_max}")
     print(f"Longitude range: {long_min} to {long_max}")
-    lat_dim = int((lat_max - lat_min) / 0.1)  # Define your lat_resolution
-    long_dim = int((long_max - long_min) / 0.1)  # Define your long_resolution
+    lat_dim = int((lat_max - lat_min) / lat_bucket_size)  # Define your lat_resolution
+    long_dim = int((long_max - long_min) / lon_bucket_size)  # Define your long_resolution
     print(lat_dim, long_dim)
     
     
