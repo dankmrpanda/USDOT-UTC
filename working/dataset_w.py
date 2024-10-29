@@ -11,3 +11,4 @@ class SpatiotemporalTensorDataset(Dataset):
     def __getitem__(self, idx):
         sample = self.data[idx]
         return sample
+

@@ -15,11 +15,13 @@
 2. `conda env export > myenv.yml`
 
 # File Directory
-converter.py: run first, do not need to do setup
+working/: this model works, **HOWEVER**, is not based on provided code, so might not function properly
 
-matrix.py: preprocesses data into a torch tensor
+setup.py: run after setup is done
 
-gan.py: run AFTER converter.py, runs the gan model (calls matrix.py)
+main.py: runs gan model, based on provided code
+
+matrix.py: tensor generator
 
 jupyter files/: not maintained
 
